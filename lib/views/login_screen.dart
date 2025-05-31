@@ -1,4 +1,5 @@
 import 'package:demologin/controllers/auth_controller.dart';
+import 'package:demologin/views/signup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -100,9 +101,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               SizedBox(height: 20),
-              Text(
-                "Don't have an account? Sign Up",
-                style: TextStyle(fontSize: 16, color: Colors.blue),
+              InkWell(
+                onTap: () => Get.to(SignupScreen()),
+                child: Text(
+                  "Don't have an account? Sign Up",
+                  style: TextStyle(fontSize: 16, color: Colors.blue),
+                ),
               ),
             ],
           ),

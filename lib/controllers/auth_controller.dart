@@ -28,4 +28,30 @@ class AuthController extends GetxController {
       Get.snackbar('Error', 'An error occurred: $e');
     }
   }
+
+  Future<void> signUp(String email, String password) async {
+    try {
+      UserCredential myuser = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      if (myuser.user != null) {
+        user.value = myuser.user;
+      }
+
+      Get.snackbar('Success', 'Sign up successful!');
+      Get.to(HomeScreen());
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        Get.snackbar('Error', 'The password provided is too weak.');
+      } else if (e.code == 'email-already-in-use') {
+        Get.snackbar('Error', 'The account already exists for that email.');
+      } else {
+        Get.snackbar('Error', e.message ?? 'An unknown error occurred.');
+      }
+    } catch (e) {
+      Get.snackbar('Error', 'An error occurred: $e');
+    }
+  }
 }
