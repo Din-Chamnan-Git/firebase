@@ -1,11 +1,33 @@
 import 'package:demologin/views/home_screen.dart';
+import 'package:demologin/views/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
-import 'package:get/get_rx/src/rx_types/rx_types.dart';
 
 class AuthController extends GetxController {
   final _auth = FirebaseAuth.instance;
   final Rx<User?> user = Rx<User?>(null);
+
+  @override
+  void onReady() {
+    super.onReady();
+    // Listen to auth state changes
+    _auth.authStateChanges().listen((User? user) {
+      _sigInedStatus(user);
+    });
+  }
+
+  void _sigInedStatus(User? user) async {
+    await Future.delayed(Duration(seconds: 2));
+    if (user != null) {
+      this.user.value = user;
+      Get.snackbar('Success', 'User is signed in!');
+      Get.to(HomeScreen());
+    } else {
+      this.user.value = null;
+      Get.snackbar('Info', 'No user is signed in.');
+      Get.to(LoginScreen());
+    }
+  }
 
   Future<void> login(String email, String password) async {
     try {
@@ -15,6 +37,7 @@ class AuthController extends GetxController {
       );
       user.value = userCredential.user;
       Get.snackbar('Success', 'Login successful!');
+
       Get.to(HomeScreen());
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
@@ -52,6 +75,21 @@ class AuthController extends GetxController {
       }
     } catch (e) {
       Get.snackbar('Error', 'An error occurred: $e');
+    }
+  }
+
+  Future<void> logout() async {
+    try {
+      await _auth.signOut();
+      user.value = null;
+      Get.snackbar('Success', 'Logout successful!');
+      Get.to(
+        LoginScreen(),
+        transition: Transition.fadeIn,
+        duration: Duration(milliseconds: 500),
+      ); // Navigate to login screen
+    } catch (e) {
+      Get.snackbar('Error', 'An error occurred while logging out: $e');
     }
   }
 }

@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: LoginScreen(),
+      home: Scaffold(body: Center(child: CircularProgressIndicator())),
       debugShowCheckedModeBanner: false,
     );
   }

@@ -103,6 +103,25 @@ class SignupScreen extends StatelessWidget {
                     ),
                   ),
                 ),
+                SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("Already have an account?"),
+                    TextButton(
+                      onPressed: () {
+                        Get.back(); // Navigate back to the login screen
+                      },
+                      child: Text(
+                        "Login",
+                        style: TextStyle(
+                          color: Colors.amber[700],
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
