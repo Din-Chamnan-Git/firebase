@@ -25,6 +25,7 @@ class AuthController extends GetxController {
     await Future.delayed(Duration(seconds: 2));
     if (user != null) {
       this.user.value = user;
+      userModel.value = await loadData(user.uid); // <-- Add this
       Get.snackbar('Success', 'User is signed in!');
       Get.to(HomeScreen());
     } else {
@@ -41,6 +42,9 @@ class AuthController extends GetxController {
         password: password,
       );
       user.value = userCredential.user;
+
+      userModel.value = await loadData(userCredential.user!.uid);
+
       Get.snackbar('Success', 'Login successful!');
 
       Get.to(HomeScreen());
@@ -107,6 +111,40 @@ class AuthController extends GetxController {
       ); // Navigate to login screen
     } catch (e) {
       Get.snackbar('Error', 'An error occurred while logging out: $e');
+    }
+  }
+
+  Future<UserModel> loadData(String uid) async {
+    try {
+      var doc = await _firestore.collection('users').doc(uid).get();
+
+      if (doc.exists) {
+        return UserModel.fromMap(doc.data()!);
+      } else {
+        Get.snackbar('Error', 'User data not found');
+        return UserModel(
+          uid: '',
+          username: '',
+          email: '',
+          profilePictureUrl: null,
+        );
+      }
+    } on FirebaseException catch (e) {
+      Get.snackbar('Error', 'Failed to load user data: ${e.message}');
+      return UserModel(
+        uid: '',
+        username: '',
+        email: '',
+        profilePictureUrl: null,
+      );
+    } catch (e) {
+      Get.snackbar('Error', 'An error occurred: $e');
+      return UserModel(
+        uid: '',
+        username: '',
+        email: '',
+        profilePictureUrl: null,
+      );
     }
   }
 }

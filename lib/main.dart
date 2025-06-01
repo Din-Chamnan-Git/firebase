@@ -21,7 +21,33 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: Scaffold(body: Center(child: CircularProgressIndicator())),
+      home: Scaffold(
+        backgroundColor: Colors.black,
+        body: Center(
+          child: Column(
+            children: [
+              SizedBox(height: 100),
+              Image.asset(
+                "assets/images/Logomark_Full Color.png",
+                width: 200,
+                height: 200,
+              ),
+              SizedBox(height: 20),
+              Text(
+                "Welcome to Demo Login",
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              SizedBox(height: 50),
+
+              CircularProgressIndicator(color: Colors.amber[700]),
+            ],
+          ),
+        ),
+      ),
       debugShowCheckedModeBanner: false,
     );
   }
