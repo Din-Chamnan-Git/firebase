@@ -89,6 +89,7 @@ class SignupScreen extends StatelessWidget {
                         );
                       } else {
                         authController.signUp(
+                          username.text.trim(),
                           email.text.trim(),
                           password.text.trim(),
                         );

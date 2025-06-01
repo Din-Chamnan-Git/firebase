@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:demologin/models/user_model.dart';
 import 'package:demologin/views/home_screen.dart';
 import 'package:demologin/views/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -5,7 +7,10 @@ import 'package:get/get.dart';
 
 class AuthController extends GetxController {
   final _auth = FirebaseAuth.instance;
+  final _firestore = FirebaseFirestore.instance;
+
   final Rx<User?> user = Rx<User?>(null);
+  final Rx<UserModel?> userModel = Rx<UserModel?>(null);
 
   @override
   void onReady() {
@@ -52,7 +57,7 @@ class AuthController extends GetxController {
     }
   }
 
-  Future<void> signUp(String email, String password) async {
+  Future<void> signUp(String username, String email, String password) async {
     try {
       UserCredential myuser = await _auth.createUserWithEmailAndPassword(
         email: email,
@@ -62,6 +67,18 @@ class AuthController extends GetxController {
       if (myuser.user != null) {
         user.value = myuser.user;
       }
+
+      UserModel userModel = UserModel(
+        uid: myuser.user!.uid,
+        username: username,
+        email: email,
+        profilePictureUrl: null, // Set default or null for now
+      );
+
+      await _firestore
+          .collection('users')
+          .doc(myuser.user!.uid)
+          .set(userModel.toMap());
 
       Get.snackbar('Success', 'Sign up successful!');
       Get.to(HomeScreen());
