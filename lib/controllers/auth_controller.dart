@@ -3,6 +3,7 @@ import 'package:demologin/models/user_model.dart';
 import 'package:demologin/views/home_screen.dart';
 import 'package:demologin/views/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class AuthController extends GetxController {
@@ -11,6 +12,8 @@ class AuthController extends GetxController {
 
   final Rx<User?> user = Rx<User?>(null);
   final Rx<UserModel?> userModel = Rx<UserModel?>(null);
+  User? get currentUser => user.value;
+  UserModel? get currentUserModel => userModel.value;
 
   @override
   void onReady() {
@@ -42,7 +45,6 @@ class AuthController extends GetxController {
         password: password,
       );
       user.value = userCredential.user;
-
       userModel.value = await loadData(userCredential.user!.uid);
 
       Get.snackbar('Success', 'Login successful!');
@@ -145,6 +147,33 @@ class AuthController extends GetxController {
         email: '',
         profilePictureUrl: null,
       );
+    }
+  }
+
+  Future<void> updateProfilePicture(String uid, String imageUrl) async {
+    if (uid.isEmpty || imageUrl.isEmpty) {
+      Get.snackbar('Error', 'UID or image URL cannot be empty.');
+      return;
+    }
+    try {
+      Get.dialog(
+        Center(child: CircularProgressIndicator()),
+        barrierDismissible: false,
+      );
+
+      await _firestore.collection('users').doc(uid).update({
+        'profilePictureUrl': imageUrl,
+      });
+
+      userModel.value = await loadData(uid);
+      userModel.refresh(); // Refresh the userModel observable
+
+      Get.back(); // Close loading dialog
+      Get.snackbar('Success', 'Profile picture updated successfully!');
+    } catch (e) {
+      Get.back(); // Close loading dialog if open
+      print('Error: $e');
+      Get.snackbar('Error', 'Failed to update profile picture.');
     }
   }
 }
