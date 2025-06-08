@@ -42,7 +42,6 @@ class _EditProfileState extends State<EditProfile> {
         authController.currentUser!.uid,
         imageUrl,
       );
-
       setState(() {
         selectedImage = file.path;
       });
@@ -58,8 +57,6 @@ class _EditProfileState extends State<EditProfile> {
       if (Get.isDialogOpen ?? false) {
         Get.back();
       }
-
-      print('Image upload failed: $e');
       Get.snackbar('Error', 'Failed to update profile picture.');
     }
   }
@@ -67,7 +64,11 @@ class _EditProfileState extends State<EditProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text('Edit Profile'),
+        centerTitle: true,
+        backgroundColor: Colors.amber,
+      ),
 
       body: Obx(
         () => Center(
