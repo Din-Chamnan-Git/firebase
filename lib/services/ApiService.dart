@@ -11,7 +11,6 @@ class ApiService {
     if (_API_KEY.isEmpty) {
       throw Exception('TMDB API key is not set. Please check your .env file.');
     }
-
     try {
       final url = Uri.parse(
         '$_baseUrl/movie/popular?api_key=$_API_KEY&language=en-US&page=1',
@@ -21,7 +20,7 @@ class ApiService {
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body)['results'] as List;
-        return data.map((json) => MovieModel.fromJson(json)).toList();
+        return data.map((json) => MovieModel.fromJson(json)).take(10).toList();
       } else {
         throw Exception('Failed to load movies: ${response.statusCode}');
       }
@@ -29,4 +28,27 @@ class ApiService {
       throw Exception('An error occurred while fetching movies: $e');
     }
   }
+
+  Future<List<MovieModel>> fetchUpComming() async {
+    if (_API_KEY.isEmpty) {
+      throw Exception('TMDB API key is not set. Please check your .env file.');
+    }
+    try {
+      final url = Uri.parse(
+        '$_baseUrl/movie/upcoming?api_key=$_API_KEY&language=en-US&page=1',
+      );
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body)['results'] as List;
+        return data.map((json) => MovieModel.fromJson(json)).take(10).toList();
+      } else {
+        throw Exception('Failed to load movies: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('An error occurred while fetching movies: $e');
+    }
+  }
+
+
 }

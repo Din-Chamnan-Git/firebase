@@ -25,65 +25,97 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Obx(() {
-        print("Movies: ${movieCtrl.movies.length}");
-        if (movieCtrl.isLoading.value) {
-          return Center(child: CircularProgressIndicator());
-        } else {
-          return GridView.builder(
-            itemCount: movieCtrl.movies.length,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              childAspectRatio: 0.7,
-            ),
-            itemBuilder: (context, index) {
-              final movie = movieCtrl.movies[index];
-              return Card(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Image.network(
-                      'https://image.tmdb.org/t/p/w500/${movie.posterPath}',
-                      fit: BoxFit.cover,
-                      height: 180,
-                      width: double.infinity,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        movie.title,
-                        style: TextStyle(fontWeight: FontWeight.bold),
+      body: Column(
+        children: [
+          SizedBox(
+            width: double.infinity,
+            height: 250,
+            child: Obx(() {
+              if (movieCtrl.isLoading.value) {
+                return Center(child: CircularProgressIndicator());
+              } else if (movieCtrl.upmovie.isEmpty) {
+                return Center(child: Text("No upcoming movies found."));
+              } else {
+                return ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: movieCtrl.upmovie.length,
+                  itemBuilder: (context, index) {
+                    final movie = movieCtrl.upmovie[index];
+                    final MyImageUrl =
+                        "https://image.tmdb.org/t/p/w500${movie.posterPath}";
+
+                    return Container(
+                      width: 350,
+                      margin: EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Text(movie.releaseDate),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            'Rating: ${movie.voteAverage}',
-                            style: TextStyle(color: Colors.amber[700]),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Image.network(
+                              MyImageUrl,
+                              height: 200,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                            ),
                           ),
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.favorite_border),
-                          onPressed: () {
-                            // Add favorite functionality here
-                          },
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              );
-            },
-          );
-        }
-      }),
+                        ],
+                      ),
+                    );
+                  },
+                );
+              }
+            }),
+          ),
+
+          SizedBox(
+            width: double.infinity,
+            height: 250,
+            child: Obx(() {
+              if (movieCtrl.isLoading.value) {
+                return Center(child: CircularProgressIndicator());
+              } else if (movieCtrl.movies.isEmpty) {
+                return Center(child: Text("No upcoming movies found."));
+              } else {
+                return ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: movieCtrl.movies.length,
+                  itemBuilder: (context, index) {
+                    final movie = movieCtrl.movies[index];
+                    final MyImageUrl =
+                        "https://image.tmdb.org/t/p/w500${movie.posterPath}";
+
+                    return Container(
+                      width: 130,
+                      margin: EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Image.network(
+                              MyImageUrl,
+                              height: 200,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                );
+              }
+            }),
+          ),
+        ],
+      ),
       bottomNavigationBar: BottomAppBar(
         color: Colors.amber[700],
         child: Row(
